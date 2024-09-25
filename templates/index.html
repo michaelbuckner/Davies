@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Claims</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        function summarizeClaim(claimId) {
+            fetch(`/api/summarize/${claimId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Summary:\n" + data.summary);
+                    } else {
+                        alert("Error: " + data.message + (data.error ? "\nDetails: " + data.error : ""));
+                    }
+                });
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            margin-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="text-center mb-4">Insurance Claims</h1>
+        <div class="row">
+            {% for claim in claims %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>{{ claim.claim_type }} Claim for {{ claim.claimant }}</strong>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Policy Number:</strong> {{ claim.policy_number }}</p>
+                        <p><strong>Description:</strong> {{ claim.description }}</p>
+                        <p><strong>Amount:</strong> ${{ claim.amount }}</p>
+                        <p><strong>Status:</strong> {{ claim.status }}</p>
+                        <p><strong>Submission Date:</strong> {{ claim.submission_date }}</p>
+                        <p><strong>Adjuster:</strong> {{ claim.adjuster }}</p>
+                        <button onclick="summarizeClaim({{ claim.id }})" class="btn btn-primary">Summarize Claim</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
